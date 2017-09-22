@@ -336,6 +336,9 @@ ValuePtr Interpreter::execute_next(Scope &scope, LoopState &loop_state)
             case UnaryOpType::Sub:
                 returnval = m_mem.create_integer((-1)*i);
                 break;
+            case UnaryOpType::Add:
+                returnval = res;
+                break;
             case UnaryOpType::Not:
                 returnval = m_mem.create_boolean(false);
                 break;
@@ -568,7 +571,10 @@ ValuePtr Interpreter::execute_next(Scope &scope, LoopState &loop_state)
             }
             else if(op_type == CompareOpType::NotEqual)
             {
-                res = !(*current == *rval);
+                if(!current || !rval)
+                    res = current != rval;
+                else
+                    res = !(*current == *rval);
             }
             else if(op_type == CompareOpType::NotIn)
             {
@@ -579,11 +585,17 @@ ValuePtr Interpreter::execute_next(Scope &scope, LoopState &loop_state)
             }
             else if(op_type == CompareOpType::LessEqual)
             {
-                res = (*rval >= *current);
+                if(!current || !rval)
+                    res =  current == rval;
+                else
+                    res = (*rval >= *current);
             }
             else if(op_type == CompareOpType::Less)
             {
-                res = (*rval > *current);
+                if(!current || !rval)
+                    res = false;
+                else
+                    res = (*rval > *current);
             }
             else
                 throw std::runtime_error("Unknown op type");
