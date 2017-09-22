@@ -540,15 +540,24 @@ ValuePtr Interpreter::execute_next(Scope &scope, LoopState &loop_state)
 
             if(op_type == CompareOpType::Equals)
             {
-                res = (*current == *rval);
+                if(!current || !rval)
+                    res = current == rval; // check if both are nullptrs
+                else
+                    res = (*current == *rval);
             }
             else if(op_type == CompareOpType::MoreEqual)
             {
-                res = (*current >= *rval);
+                if(!current || !rval)
+                    res = current == rval; // check if both are nullptrs
+                else
+                    res = (*current >= *rval);
             }
             else if(op_type == CompareOpType::More)
             {
-                res = (*current > *rval);
+                if(!current || !rval)
+                    res = false; //FIXME throw exception
+                else
+                    res = (*current > *rval);
             }
             else if(op_type == CompareOpType::In)
             {
