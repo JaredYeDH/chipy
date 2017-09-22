@@ -1,10 +1,18 @@
 #pragma once
 
-#ifndef IS_ENCLAVE
-#include <glog/logging.h>
-#endif
-
 #include "RangeIterator.h"
+
+#ifdef IS_ENCLAVE
+extern void print_program_output(const std::string &str);
+#else
+
+#include <glog/logging.h>
+
+inline void print_program_output(const std::string &str)
+{
+    LOG(INFO) << str;
+}
+#endif
 
 namespace chipy
 {
@@ -68,7 +76,6 @@ public:
             else
                 throw std::runtime_error("Can't conver to integer");
         }
-
         else if(m_type == BuiltinType::MakeInt)
         {
             if(args.size() != 1)
@@ -98,11 +105,7 @@ public:
             if(arg->type() != ValueType::String)
                 throw std::runtime_error("Argument not a string");
 
-#ifndef IS_ENCLAVE
-            LOG(INFO) << "Program says: " << value_cast<StringVal>(arg)->get();
-#else
-    // FIXME        LOG(INFO) << "Program says: " << value_cast<StringVal>(arg)->get();
-#endif
+            print_program_output(("Program says: ") + value_cast<StringVal>(arg)->get());
         }
         else
             throw std::runtime_error("Unknown builtin type");
