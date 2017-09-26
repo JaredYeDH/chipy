@@ -369,7 +369,10 @@ private:
             }
             break;
         }
-       default:
+        case pypa::AstType::Pass:
+            m_result << NodeType::Pass;
+            break;
+        default:
             throw std::runtime_error("Unknown statement type!");
         }
     }

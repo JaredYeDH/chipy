@@ -5,6 +5,7 @@ namespace chipy
 
 enum class NodeType
 {
+    Pass,
     StatementList,
     Name,
     Assign,

@@ -204,6 +204,10 @@ ValuePtr Interpreter::execute_next(Scope &scope, LoopState &loop_state)
         returnval = wrap_value(new (m_mem) Alias(m_mem, name, as_name));
         break;
     }
+    case NodeType::Pass:
+    {
+        break;
+    }
     case NodeType::Attribute:
     {
         ValuePtr value = execute_next(scope, dummy_loop_state);
@@ -828,6 +832,10 @@ void Interpreter::skip_next()
 
     switch(type)
     {
+    case NodeType::Pass:
+    {
+        break;
+    }
     case NodeType::Name:
     {
         std::string str;

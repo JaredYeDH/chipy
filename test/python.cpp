@@ -40,6 +40,18 @@ public:
     }
 };
 
+TEST(PythonTest, pass)
+{
+    const std::string code = "pass\n"
+                             "return True";
+
+    auto doc = compile_code(code);
+
+    Interpreter pyint(doc);
+
+    EXPECT_TRUE(pyint.execute());
+}
+
 TEST(PythonTest, greater_than)
 {
     const std::string code = "i = 0\n"
