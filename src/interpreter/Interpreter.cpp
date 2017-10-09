@@ -476,6 +476,19 @@ ValuePtr Interpreter::execute_next(Scope &scope, LoopState &loop_state)
 
             break;
         }
+        case BinaryOpType::Mod:
+        {
+            if(left->type() == ValueType::Integer && right->type() == ValueType::Integer)
+            {
+                auto i1 = value_cast<IntVal>(left)->get();
+                auto i2 = value_cast<IntVal>(right)->get();
+
+                returnval = m_mem.create_integer(i1 % i2);
+            }
+            else
+                throw std::runtime_error("failed apply mod function");
+            break;
+        }
  
         case BinaryOpType::Sub:
         {
