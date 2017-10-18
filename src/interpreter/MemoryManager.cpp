@@ -9,6 +9,11 @@ MemoryManager::MemoryManager()
     m_buffer = new uint8_t[PAGE_SIZE];
 }
 
+MemoryManager::~MemoryManager()
+{
+    delete m_buffer;
+}
+
 void* MemoryManager::malloc(size_t size)
 {
 /*    if(m_buffer_pos+size >= m_buffer.size())

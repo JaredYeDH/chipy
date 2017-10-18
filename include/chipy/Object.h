@@ -40,6 +40,8 @@ public:
 
     MemoryManager(MemoryManager &other) = delete;
 
+    ~MemoryManager();
+
     void* malloc(size_t sz);
     void free(void* ptr);
 
