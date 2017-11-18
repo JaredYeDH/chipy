@@ -24,12 +24,15 @@ public:
 
     virtual ValuePtr get_member(const std::string& name) = 0;
 
-    ValuePtr duplicate() override
+    ValuePtr duplicate(MemoryManager&) override
     {
         return nullptr; //not supported
     }
 };
 
+/**
+ * @brief Wrapper for a lambda function
+ */
 class Function : public Callable
 {
 public:
@@ -37,9 +40,9 @@ public:
         : Callable(mem), m_func(func)
     {}
 
-    ValuePtr duplicate() override
+    ValuePtr duplicate(MemoryManager &mem) override
     {
-        return wrap_value(new (memory_manager()) Function(memory_manager(), m_func));
+        return wrap_value(new (mem) Function(mem, m_func));
     }
 
     ValuePtr call(const std::vector<ValuePtr>& args) override

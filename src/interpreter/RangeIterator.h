@@ -15,9 +15,9 @@ public:
         m_pos = m_start;
     }
 
-    ValuePtr duplicate() override
+    ValuePtr duplicate(MemoryManager &mem) override
     {
-        return wrap_value(new (memory_manager()) RangeIterator(memory_manager(), m_start, m_end, m_step_size));
+        return wrap_value(new (mem) RangeIterator(mem, m_start, m_end, m_step_size));
     }
 
     ValuePtr next() override

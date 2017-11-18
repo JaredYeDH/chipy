@@ -20,9 +20,9 @@ ValuePtr DictItemIterator::next()
     return t;
 }
 
-ValuePtr DictItemIterator::duplicate()
+ValuePtr DictItemIterator::duplicate(MemoryManager &mem)
 {
-    return wrap_value(new (memory_manager()) DictItemIterator(memory_manager(), m_dict));
+    return wrap_value(new (mem) DictItemIterator(mem, m_dict));
 }
 
 DictKeyIterator::DictKeyIterator(MemoryManager &mem, Dictionary &dict)
@@ -46,14 +46,14 @@ ValuePtr DictKeyIterator::next()
     return elem;
 }
 
-ValuePtr DictKeyIterator::duplicate()
+ValuePtr DictKeyIterator::duplicate(MemoryManager &mem)
 {
-    return wrap_value(new (memory_manager()) DictKeyIterator(memory_manager(), m_dict));
+    return wrap_value(new (mem) DictKeyIterator(mem, m_dict));
 }
 
-ValuePtr DictItems::duplicate()
+ValuePtr DictItems::duplicate(MemoryManager &mem)
 {
-    return wrap_value(new (memory_manager()) DictItems(memory_manager(), m_dict));
+    return wrap_value(new (mem) DictItems(mem, m_dict));
 }
 
 IteratorPtr DictItems::iterate()
@@ -100,9 +100,9 @@ ValueType Dictionary::type() const
     return ValueType::Dictionary;
 }
 
-ValuePtr Dictionary::duplicate()
+ValuePtr Dictionary::duplicate(MemoryManager &mem)
 {
-    auto d = wrap_value(new (memory_manager()) Dictionary(memory_manager()));
+    auto d = wrap_value(new (mem) Dictionary(mem));
 
     for(auto &it: m_elements)
     {

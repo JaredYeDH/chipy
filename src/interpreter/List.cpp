@@ -8,9 +8,9 @@ IteratorPtr List::iterate()
     return wrap_value(new (memory_manager()) ListIterator(memory_manager(), *this));
 }
 
-ValuePtr List::duplicate()
+ValuePtr List::duplicate(MemoryManager &mem)
 {
-    auto d = wrap_value(new (memory_manager()) List(memory_manager()));
+    auto d = wrap_value(new (mem) List(mem));
 
     for(auto elem: m_elements)
     {
@@ -75,9 +75,9 @@ ValuePtr ListIterator::next()
     return res;
 }
 
-ValuePtr ListIterator::duplicate()
+ValuePtr ListIterator::duplicate(MemoryManager &mem)
 {
-    return ValuePtr(new (memory_manager()) ListIterator(memory_manager(), m_list));
+    return ValuePtr(new (mem) ListIterator(mem, m_list));
 }
 
 }

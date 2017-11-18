@@ -32,9 +32,9 @@ public:
         : Callable(mem), m_type(type)
     {}
 
-    ValuePtr duplicate() override
+    ValuePtr duplicate(MemoryManager &mem) override
     {
-        return ValuePtr(new (memory_manager()) Builtin(memory_manager(), m_type));
+        return ValuePtr(new (mem) Builtin(mem, m_type));
     }
 
     ValueType type() const override

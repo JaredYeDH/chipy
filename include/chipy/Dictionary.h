@@ -17,7 +17,7 @@ public:
 
     ValuePtr next() override;
 
-    ValuePtr duplicate() override;
+    ValuePtr duplicate(MemoryManager &mem) override;
 
 private:
     Dictionary &m_dict;
@@ -44,7 +44,7 @@ public:
         return iterate();
     }
 
-    ValuePtr duplicate() override;
+    ValuePtr duplicate(MemoryManager &mem) override;
 
     IteratorPtr iterate();
 
@@ -63,7 +63,7 @@ public:
 
     ValuePtr next() override;
 
-    ValuePtr duplicate() override;
+    ValuePtr duplicate(MemoryManager &mem) override;
 
 private:
     Dictionary &m_dict;
@@ -89,7 +89,7 @@ public:
 
     ValueType type() const override;
 
-    ValuePtr duplicate() override;
+    ValuePtr duplicate(MemoryManager &mem) override;
 
     std::map<std::string, ValuePtr>& elements();
 

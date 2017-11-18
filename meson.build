@@ -1,4 +1,4 @@
-project('chipy', 'cpp', default_options: ['cpp_std=c++1z'])
+project('chipy', 'cpp', default_options: ['cpp_std=c++1z'], version: '1.0')
 
 inc_dirs = include_directories(get_option('prefix') + '/include', '/usr/local/include', './include/')
 prefix_library_path=[get_option('prefix')+'/lib/x86_64-linux-gnu', get_option('prefix')+'/lib', '/usr/local/lib', '/usr/local/lib/x86_64-linux-gnu']
@@ -42,7 +42,9 @@ chipy_sgx = static_library('chipy_sgx', interpreter_cpp_files,
     ],
     include_directories: [sgx_incdir, sgx_tlibc_incdir, sgx_stdcxx_incdir, inc_dirs], install: true)
 
+subdir('doc')
 
 install_subdir('include/chipy', install_dir : 'include')
 
-executable('chipy-test', test_cpp_files, dependencies: [gtest, json_dep, pypa_dep], link_with: chipy, include_directories: inc_dirs)
+tests = executable('chipy-test', test_cpp_files, dependencies: [gtest, json_dep, pypa_dep], link_with: chipy, include_directories: inc_dirs)
+test('chipy-test', tests)

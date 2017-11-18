@@ -18,9 +18,9 @@ public:
         return ValueType::Tuple;
     }
 
-    ValuePtr duplicate() override
+    ValuePtr duplicate(MemoryManager &mem) override
     {
-        return ValuePtr(new (memory_manager()) Tuple(memory_manager(), m_first, m_second));
+        return ValuePtr(new (mem) Tuple(mem, m_first, m_second));
     }
 
     ValuePtr first()

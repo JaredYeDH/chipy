@@ -49,7 +49,12 @@ class Value : public Object
 public:
     virtual ValueType type() const = 0;
 
-    virtual ValuePtr duplicate() = 0;
+    ValuePtr duplicate()
+    {
+        return duplicate(memory_manager());
+    }
+
+    virtual ValuePtr duplicate(MemoryManager &mem) = 0;
 
     virtual bool is_generator() const
     {
@@ -120,9 +125,9 @@ public:
         return ValueType::Alias;
     }
 
-    ValuePtr duplicate() override
+    ValuePtr duplicate(MemoryManager &memory_manager) override
     {
-        return wrap_value(new (memory_manager()) Alias(memory_manager(), name(), as_name()));
+        return wrap_value(new (memory_manager) Alias(memory_manager, name(), as_name()));
     }
 
     const std::string name() const { return m_name; }
@@ -138,8 +143,8 @@ public:
     BoolVal(MemoryManager &mem, bool val)
         : PlainValue(mem, val) {}
 
-    ValuePtr duplicate() override
-    { return wrap_value(new (memory_manager()) BoolVal(memory_manager(), m_value)); }
+    ValuePtr duplicate(MemoryManager &mem) override
+    { return wrap_value(new (mem) BoolVal(mem, m_value)); }
 
     bool bool_test() const override { return m_value; }
 };
@@ -150,8 +155,8 @@ public:
     StringVal(MemoryManager &mem, const std::string &val)
         : PlainValue(mem, val) {}
 
-    ValuePtr duplicate() override
-    { return wrap_value(new (memory_manager()) StringVal(memory_manager(), m_value)); }
+    ValuePtr duplicate(MemoryManager &mem) override
+    { return wrap_value(new (mem) StringVal(mem, m_value)); }
 };
 
 class FloatVal : public PlainValue<double, ValueType::Float>
@@ -160,8 +165,8 @@ public:
     FloatVal(MemoryManager &mem, const double &val) 
         : PlainValue(mem, val) {}
 
-    ValuePtr duplicate() override
-    { return wrap_value(new (memory_manager()) FloatVal(memory_manager(), m_value)); }
+    ValuePtr duplicate(MemoryManager &mem) override
+    { return wrap_value(new (mem) FloatVal(mem, m_value)); }
 };
 
 class IntVal : public PlainValue<int32_t, ValueType::Integer>
@@ -170,8 +175,8 @@ public:
     IntVal(MemoryManager &mem, const int32_t &val)
         : PlainValue(mem, val) {}
 
-    ValuePtr duplicate() override
-    { return wrap_value(new (memory_manager()) IntVal(memory_manager(), m_value)); }
+    ValuePtr duplicate(MemoryManager &mem) override
+    { return wrap_value(new (mem) IntVal(mem, m_value)); }
 
     bool bool_test() const override
     { return m_value != 0; }

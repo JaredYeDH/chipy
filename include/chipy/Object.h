@@ -40,10 +40,10 @@ public:
 
     MemoryManager(MemoryManager &other) = delete;
 
-    ~MemoryManager();
+    virtual ~MemoryManager();
 
-    void* malloc(size_t sz);
-    void free(void* ptr);
+    virtual void* malloc(size_t sz);
+    virtual void free(void* ptr);
 
     IntValPtr create_integer(const int32_t value);
     DictionaryPtr create_dictionary();
@@ -69,6 +69,16 @@ private:
     void resize(size_t new_size);
 
     std::unordered_map<intptr_t, AllocInfo> m_allocs;
+};
+
+/**
+ * @brief Memory manager that will *not* manage it's own memory
+ */
+class DummyMemoryManager : public MemoryManager
+{
+public:
+    void* malloc(size_t sz) override;
+    void free(void* ptr) override;
 };
 
 class Object

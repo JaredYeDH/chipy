@@ -15,7 +15,7 @@ public:
 
     ValuePtr next() override;
 
-    ValuePtr duplicate() override;
+    ValuePtr duplicate(MemoryManager &mem) override;
 
 private:
     List &m_list;
@@ -31,7 +31,7 @@ public:
 
     IteratorPtr iterate() override;
 
-    ValuePtr duplicate() override;
+    ValuePtr duplicate(MemoryManager &mem) override;
 
     ValuePtr get(uint32_t index);
 
