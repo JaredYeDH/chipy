@@ -14,6 +14,16 @@ MemoryManager::~MemoryManager()
     delete m_buffer;
 }
 
+void* DummyMemoryManager::malloc(size_t size)
+{
+    return ::malloc(size);
+}
+
+void DummyMemoryManager::free(void *ptr)
+{
+    ::free(ptr);
+}
+
 void* MemoryManager::malloc(size_t size)
 {
 /*    if(m_buffer_pos+size >= m_buffer.size())

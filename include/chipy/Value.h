@@ -187,15 +187,26 @@ typedef std::shared_ptr<StringVal> StringValPtr;
 typedef std::shared_ptr<FloatVal> FloatValPtr;
 typedef std::shared_ptr<BoolVal> BoolValPtr;
 
-class value_exception {};
+class value_exception
+{
+    std::string m_what;
 
+public:
+    value_exception(const std::string &what)
+        : m_what(what) {}
+
+    const std::string& what() const
+    {
+        return m_what;
+    }
+};
 
 template<typename T>
 std::shared_ptr<T> value_cast(ValuePtr val)
 {
     auto res = std::dynamic_pointer_cast<T>(val);
     if(res == nullptr)
-        throw value_exception();
+        throw value_exception("Invalid value cast");
 
     return res;
 }
@@ -233,6 +244,66 @@ inline bool operator==(const Value &first, const Value &second)
     }
     else
         return false;
+}
+
+/**
+ * @brief Serialize a Value to a BitStream
+ *
+ * @note This currently only supports plain values
+ */
+inline BitStream& operator<<(BitStream &bs, ValuePtr val)
+{
+    switch(val->type())
+    {
+    case ValueType::Integer:
+    {
+        auto ival = value_cast<IntVal>(val);
+        bs << ValueType::Integer << ival->get();
+        break;
+    }
+    case ValueType::Bool:
+    {
+        auto bval = value_cast<BoolVal>(val);
+        bs << ValueType::Bool << bval->get();
+        break;
+    }
+    default:
+        throw value_exception("Cannot serialize this type of value!");
+    }
+
+    return bs;
+}
+
+/**
+ * @brief Read a value from a bitstream
+ *
+ * @param bs
+ *      The BitStream containg the value
+ * @param mem
+ *      The value will be initialized in mem's context
+ */
+inline ValuePtr read_value(BitStream &bs, MemoryManager &mem)
+{
+    ValueType type;
+    bs >> type;
+
+    switch(type)
+    {
+    case ValueType::Integer:
+    {
+        int32_t i = 0;
+        bs >> i;
+        return mem.create_integer(i);
+    }
+    case ValueType::Bool:
+    {
+        bool b = false;
+        bs >> b;
+        return mem.create_boolean(b);
+    }
+    default:
+        throw value_exception("Cannot serialize this type of value!");
+    }
 }
 
 }
