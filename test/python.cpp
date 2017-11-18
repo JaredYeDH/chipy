@@ -1,4 +1,6 @@
 #include "chipy/chipy.h"
+#include "chipy/unpack.h"
+
 #include <gtest/gtest.h>
 
 using namespace chipy;
@@ -49,7 +51,7 @@ TEST(PythonTest, pass)
 
     Interpreter pyint(doc);
 
-    EXPECT_TRUE(pyint.execute());
+    EXPECT_TRUE(unpack_bool(pyint.execute()));
 }
 
 TEST(PythonTest, greater_than)
@@ -61,7 +63,7 @@ TEST(PythonTest, greater_than)
 
     Interpreter pyint(doc);
 
-    EXPECT_TRUE(pyint.execute());
+    EXPECT_TRUE(unpack_bool(pyint.execute()));
 }
 
 TEST(PythonTest, while_loop)
@@ -76,7 +78,7 @@ TEST(PythonTest, while_loop)
 
     Interpreter pyint(doc);
     auto res = pyint.execute();
-    EXPECT_EQ(res, true);
+    EXPECT_TRUE(unpack_bool(res));
 }
 
 TEST(PythonTest, rand)
@@ -90,7 +92,7 @@ TEST(PythonTest, rand)
 
     Interpreter pyint(doc);
     auto res = pyint.execute();
-    EXPECT_EQ(res, true);
+    EXPECT_TRUE(unpack_bool(res));
 }
 
 TEST(PythonTest, rand2)
@@ -104,7 +106,7 @@ TEST(PythonTest, rand2)
 
     Interpreter pyint(doc);
     auto res = pyint.execute();
-    EXPECT_EQ(res, true);
+    EXPECT_TRUE(unpack_bool(res));
 }
 
 TEST(PythonTest, call_cpp_with_argument)
@@ -125,7 +127,7 @@ TEST(PythonTest, call_cpp_with_argument)
     pyint.set_module("foo", v);
 
     auto res = pyint.execute();
-    EXPECT_EQ(res, true);
+    EXPECT_TRUE(unpack_bool(res));
 }
 
 TEST(PythonTest, call_cpp)
@@ -146,7 +148,7 @@ TEST(PythonTest, call_cpp)
     pyint.set_module("foo", v);
 
     auto res = pyint.execute();
-    EXPECT_EQ(res, true);
+    EXPECT_TRUE(unpack_bool(res));
 }
 
 TEST(PythonTest, array)
@@ -162,8 +164,7 @@ TEST(PythonTest, array)
     Interpreter pyint(doc);
 
     auto res = pyint.execute();
-
-    EXPECT_EQ(res, true);
+    EXPECT_TRUE(unpack_bool(res));
 }
 
 TEST(PythonTest, for_loop)
@@ -178,25 +179,21 @@ TEST(PythonTest, for_loop)
     Interpreter pyint(doc);
 
     auto res = pyint.execute();
-
-    EXPECT_TRUE(res);
+    EXPECT_TRUE(unpack_bool(res));
 }
 
 TEST(PythonTest, dictionary)
 {
     const std::string code =
             "i = {'value':42}\n"
-            "if i['value'] == 42:\n"
-            "	return True\n"
-            "return False";
+            "return i['value']";
 
     auto doc = compile_code(code);
 
     Interpreter pyint(doc);
 
     auto res = pyint.execute();
-
-    EXPECT_EQ(res, true);
+    EXPECT_EQ(unpack_integer(res), 42);
 }
 
 TEST(PythonTest, if_clause)
@@ -213,8 +210,7 @@ TEST(PythonTest, if_clause)
     Interpreter pyint(doc);
 
     auto res = pyint.execute();
-
-    EXPECT_EQ(res, true);
+    EXPECT_TRUE(unpack_bool(res));
 }
 
 TEST(PythonTest, str_eq)
@@ -230,7 +226,7 @@ TEST(PythonTest, str_eq)
     Interpreter pyint(doc);
     auto res = pyint.execute();
 
-    EXPECT_EQ(res, true);
+    EXPECT_TRUE(unpack_bool(res));
 }
 
 TEST(PythonTest, none_value)
@@ -245,7 +241,7 @@ TEST(PythonTest, none_value)
     Interpreter pyint(doc);
     auto res = pyint.execute();
 
-    EXPECT_FALSE(res);
+    EXPECT_FALSE(unpack_bool(res));
 }
 
 TEST(PythonTest, logical_and)
@@ -259,7 +255,7 @@ TEST(PythonTest, logical_and)
     Interpreter pyint(doc);
     auto res = pyint.execute();
 
-    EXPECT_EQ(res, true);
+    EXPECT_TRUE(unpack_bool(res));
 }
 
 TEST(PythonTest, create_by_assign)
@@ -267,13 +263,13 @@ TEST(PythonTest, create_by_assign)
     const std::string code =
             "a = 1\n"
             "b = a+1\n"
-            "return b == 2";
+            "return b";
 
     auto doc = compile_code(code);
     Interpreter pyint(doc);
     auto res = pyint.execute();
 
-    EXPECT_EQ(res, true);
+    EXPECT_EQ(unpack_integer(res), 2);
 }
 
 TEST(PythonTest, iterate_dict)
@@ -291,7 +287,7 @@ TEST(PythonTest, iterate_dict)
     Interpreter pyint(doc);
     auto res = pyint.execute();
 
-    EXPECT_EQ(res, true);
+    EXPECT_TRUE(unpack_bool(res));
 }
 
 TEST(PythonTest, or_op)
@@ -307,7 +303,7 @@ TEST(PythonTest, or_op)
     Interpreter pyint(doc);
     auto res = pyint.execute();
 
-    EXPECT_EQ(res, true);
+    EXPECT_TRUE(unpack_bool(res));
 }
 
 TEST(PythonTest, iterate_dict2)
@@ -324,7 +320,7 @@ TEST(PythonTest, iterate_dict2)
     Interpreter pyint(doc);
     auto res = pyint.execute();
 
-    EXPECT_EQ(res, true);
+    EXPECT_TRUE(unpack_bool(res));
 }
 
 TEST(PythonTest, loop_break)
@@ -340,7 +336,7 @@ TEST(PythonTest, loop_break)
     Interpreter pyint(doc);
     auto res = pyint.execute();
 
-    EXPECT_EQ(res, true);
+    EXPECT_TRUE(unpack_bool(res));
 }
 
 TEST(PythonTest, loop_continue)
@@ -356,7 +352,7 @@ TEST(PythonTest, loop_continue)
     Interpreter pyint(doc);
     auto res = pyint.execute();
 
-    EXPECT_EQ(res, true);
+    EXPECT_TRUE(unpack_bool(res));
 }
 
 
@@ -370,7 +366,7 @@ TEST(PythonTest, not)
     Interpreter pyint(doc);
     auto res = pyint.execute();
 
-    EXPECT_EQ(res, true);
+    EXPECT_TRUE(unpack_bool(res));
 }
 
 TEST(PythonTest, pre_set_list)
@@ -384,7 +380,7 @@ TEST(PythonTest, pre_set_list)
     pyint.set_list("b", {"bar", "foo"});
     auto res = pyint.execute();
 
-    EXPECT_EQ(res, true);
+    EXPECT_TRUE(unpack_bool(res));
 }
 
 TEST(PythonTest, set_variable)
@@ -398,7 +394,7 @@ TEST(PythonTest, set_variable)
     Interpreter pyint(doc);
     auto res = pyint.execute();
 
-    EXPECT_EQ(res, false);
+    EXPECT_FALSE(unpack_bool(res));
 }
 
 TEST(PythonTest, document_to_value)
@@ -426,5 +422,6 @@ TEST(PythonTest, pre_set_value)
 
     interpreter.set_string("op_type", "put");
 
-    EXPECT_EQ(interpreter.execute(), false);
+    auto res = interpreter.execute();
+    EXPECT_FALSE(unpack_bool(res));
 }

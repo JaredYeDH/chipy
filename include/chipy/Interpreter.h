@@ -18,7 +18,7 @@ public:
     Interpreter(const BitStream &data);
     ~Interpreter();
 
-    bool execute();
+    ValuePtr execute();
 
     void set_module(const std::string& name, ModulePtr module);
 

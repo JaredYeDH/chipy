@@ -101,15 +101,11 @@ void Interpreter::load_module(Scope &scope, const std::string &mname, const std:
     scope.set_value(as_name == "" ? mname: as_name, module);
 }
 
-bool Interpreter::execute()
+ValuePtr Interpreter::execute()
 {
     LoopState loop_state = LoopState::None;
     ValuePtr val = execute_next(*m_global_scope, loop_state);
-
-    if(!val || val->type() != ValueType::Bool)
-        throw std::runtime_error("result is not a boolean");
-
-    return value_cast<BoolVal>(val)->get();
+    return val;
 }
 
 std::vector<std::string> Interpreter::read_names()
