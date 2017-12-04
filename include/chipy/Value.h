@@ -11,6 +11,7 @@ namespace chipy
 
 enum class ValueType
 {
+    None,
     Bool,
     String,
     Integer,
@@ -253,6 +254,12 @@ inline bool operator==(const Value &first, const Value &second)
  */
 inline BitStream& operator<<(BitStream &bs, ValuePtr val)
 {
+    if(!val)
+    {
+        bs << ValueType::None;
+        return bs;
+    }
+
     switch(val->type())
     {
     case ValueType::Integer:
@@ -286,6 +293,9 @@ inline ValuePtr read_value(BitStream &bs, MemoryManager &mem)
 {
     ValueType type;
     bs >> type;
+
+    if(type == ValueType::None)
+        return nullptr;
 
     switch(type)
     {
