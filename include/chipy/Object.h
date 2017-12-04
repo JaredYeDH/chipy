@@ -48,7 +48,7 @@ public:
     IntValPtr create_integer(const int32_t value);
     DictionaryPtr create_dictionary();
     StringValPtr create_string(const std::string &str);
-    TuplePtr create_tuple(ValuePtr first, ValuePtr second);
+    TuplePtr create_tuple();
     ValuePtr create_from_document(const json::Document &doc);
     FloatValPtr create_float(const double &f);
     BoolValPtr create_boolean(const bool value);

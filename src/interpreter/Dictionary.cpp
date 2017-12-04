@@ -14,8 +14,10 @@ ValuePtr DictItemIterator::next()
     if(m_it == m_dict.elements().end())
         throw stop_iteration_exception();
 
-    auto key = wrap_value(new (memory_manager()) StringVal(memory_manager(), m_it->first));
-    auto t = wrap_value(new (memory_manager()) Tuple(memory_manager(), key, m_it->second));
+    auto key = memory_manager().create_string( m_it->first);
+    auto t = memory_manager().create_tuple();
+    t->append(key);
+    t->append(m_it->second);
     m_it++;
     return t;
 }

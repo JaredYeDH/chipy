@@ -133,7 +133,7 @@ std::vector<std::string> Interpreter::read_names()
         m_data >> num_elems;
 
         if(num_elems != 2)
-            throw std::runtime_error("Can only handle pairs");
+            throw std::runtime_error("Can only name pairs");
 
         result.push_back(read_name());
         result.push_back(read_name());
@@ -182,10 +182,38 @@ ValuePtr Interpreter::execute_next(Scope &scope, LoopState &loop_state)
         auto module = read_name();
     
         auto val = execute_next(scope, dummy_loop_state);
-        auto alias = value_cast<Alias>(val);
-        load_from_module(scope, module, alias->name(), alias->as_name());
+
+        if(val->type() == ValueType::Tuple)
+        {
+            auto t = value_cast<Tuple>(val);
+
+            for(uint32_t i = 0; i < t->size(); ++i)
+            {
+                auto alias = value_cast<Alias>(t->get(i));
+                load_from_module(scope, module, alias->name(), alias->as_name());
+            }
+        }
+        else
+        {
+            auto alias = value_cast<Alias>(val);
+            load_from_module(scope, module, alias->name(), alias->as_name());
+        }
         break;
     }
+    case NodeType::Tuple:
+    {
+        uint32_t num_elems = 0;
+        m_data >> num_elems;
+
+        auto tuple = wrap_value(new (m_mem) Tuple(m_mem));
+
+        for(uint32_t i = 0; i < num_elems; ++i)
+            tuple->append(execute_next(scope, dummy_loop_state));
+
+        returnval = tuple;
+        break;
+    }
+ 
     case NodeType::Import:
     {
         auto val = execute_next(scope, dummy_loop_state);
@@ -271,8 +299,8 @@ ValuePtr Interpreter::execute_next(Scope &scope, LoopState &loop_state)
 
                 auto t = value_cast<Tuple>(val);
 
-                scope.set_value(names[0], t->first());
-                scope.set_value(names[1], t->second());
+                scope.set_value(names[0], t->get(0));
+                scope.set_value(names[1], t->get(1));
             }
             else
                 throw std::runtime_error("invalid number of names");
@@ -785,8 +813,8 @@ ValuePtr Interpreter::execute_next(Scope &scope, LoopState &loop_state)
                 if(!t)
                     throw std::runtime_error("Not a tuple!");
 
-                body_scope.set_value(names[0], t->first());
-                body_scope.set_value(names[1], t->second());
+                body_scope.set_value(names[0], t->get(0));
+                body_scope.set_value(names[1], t->get(1));
             }
             else
                 throw std::runtime_error("Cannot handle more than two names");

@@ -4,9 +4,9 @@
 namespace chipy
 {
 
-TuplePtr MemoryManager::create_tuple(ValuePtr first, ValuePtr second)
+TuplePtr MemoryManager::create_tuple()
 {
-    return wrap_value<Tuple>(new (*this) Tuple(*this, first, second));
+    return wrap_value<Tuple>(new (*this) Tuple(*this));
 }
 
 StringValPtr MemoryManager::create_string(const std::string &str)

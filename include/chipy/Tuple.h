@@ -8,10 +8,14 @@ namespace chipy
 class Tuple : public Value
 {
 public:
-    Tuple(MemoryManager &mem, ValuePtr first, ValuePtr second)
-        : Value(mem), m_first(first), m_second(second)
+    Tuple(MemoryManager &mem)
+        : Value(mem), m_content()
     {
     }
+
+    Tuple(MemoryManager &mem, const Tuple &other)
+        : Value(mem), m_content(other.m_content)
+    {}
 
     ValueType type() const override
     {
@@ -20,22 +24,26 @@ public:
 
     ValuePtr duplicate(MemoryManager &mem) override
     {
-        return ValuePtr(new (mem) Tuple(mem, m_first, m_second));
+        return ValuePtr(new (mem) Tuple(mem, *this));
     }
 
-    ValuePtr first()
+    void append(ValuePtr val)
     {
-        return m_first;
+        m_content.push_back(val);
     }
 
-    ValuePtr second()
+    uint32_t size() const
     {
-        return m_second;
+        return m_content.size();
+    }
+
+    ValuePtr get(uint32_t pos)
+    {
+        return m_content[pos];
     }
 
 private:
-    ValuePtr m_first;
-    ValuePtr m_second;
+    std::vector<ValuePtr> m_content;
 };
 
 typedef std::shared_ptr<Tuple> TuplePtr;
