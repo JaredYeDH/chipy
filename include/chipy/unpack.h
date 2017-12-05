@@ -19,4 +19,9 @@ inline int32_t unpack_integer(ValuePtr val)
     return ival->get();
 }
 
+inline std::string unpack_string(ValuePtr val)
+{
+    auto sval = value_cast<StringVal>(val);
+    return sval->get();
+}
 }

@@ -274,6 +274,12 @@ inline BitStream& operator<<(BitStream &bs, ValuePtr val)
         bs << ValueType::Bool << bval->get();
         break;
     }
+    case ValueType::String:
+    {   
+        auto strval = value_cast<StringVal>(val);
+        bs << ValueType::String << strval->get();
+        break;
+    }
     default:
         throw value_exception("Cannot serialize this type of value!");
     }
@@ -310,6 +316,12 @@ inline ValuePtr read_value(BitStream &bs, MemoryManager &mem)
         bool b = false;
         bs >> b;
         return mem.create_boolean(b);
+    }
+    case ValueType::String:
+    {
+        std::string str;
+        bs >> str;
+        return mem.create_string(str);
     }
     default:
         throw value_exception("Cannot serialize this type of value!");
