@@ -1,6 +1,7 @@
 #pragma once
 
 #include "RangeIterator.h"
+#include "chipy/unpack.h"
 
 #ifdef IS_ENCLAVE
 extern void print_program_output(const std::string &str);
@@ -63,15 +64,23 @@ public:
                 throw std::runtime_error("Invalid number of arguments");
 
             auto arg = args[0];
-            if(arg->type() == ValueType::String)
+            if(!arg)
+            {
+                return memory_manager().create_string("None");
+            }   
+            else if(arg->type() == ValueType::String)
             {
                 return arg;
             }
+            else if(arg->type() == ValueType::Bool)
+            {
+                auto b = unpack_bool(arg);
+                return memory_manager().create_string(b ? "True" : "False");
+            }
             else if(arg->type() == ValueType::Integer)
             {
-                auto i = value_cast<IntVal>(arg)->get();
-
-                return wrap_value(new (memory_manager()) StringVal(memory_manager(), std::to_string(i)));
+                auto i = unpack_integer(arg);
+                return memory_manager().create_string(std::to_string(i));
             }
             else
                 throw std::runtime_error("Can't conver to integer");
