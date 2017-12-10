@@ -26,7 +26,9 @@ enum class ValueType
     Tuple,
     Alias,
     Module,
-    Function
+    Function,
+    geo_Vector2,
+    Custom
 };
 
 class Value;
@@ -84,6 +86,22 @@ protected:
         {}
 };
 
+/**
+ * A user/application defined value-type
+ */
+class CustomValue : public Value
+{
+public:
+    CustomValue(MemoryManager &mem)
+        : chipy::Value(mem) {}
+
+    ValueType type() const override
+    {
+        return ValueType::Custom;
+    }
+
+    virtual BitStream as_bitstream() const = 0;
+};
 
 bool operator==(const Value &v1, const Value& v2);
 

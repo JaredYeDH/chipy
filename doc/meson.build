@@ -19,4 +19,4 @@ html_target = custom_target('docs',
                             input: doxyfile,
                             output: 'html',
                             command: [doxygen, doxyfile],
-                            build_by_default: true)
+                            build_by_default: false)

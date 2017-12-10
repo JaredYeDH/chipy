@@ -19,6 +19,21 @@ inline int32_t unpack_integer(ValuePtr val)
     return ival->get();
 }
 
+inline float unpack_float(ValuePtr val)
+{
+    if(val->type() == ValueType::Float)
+    {
+        auto fval = value_cast<FloatVal>(val);
+        return fval->get();
+    }
+    else if(val->type() == ValueType::Integer)
+    {
+        return static_cast<float>(unpack_integer(val));
+    }
+    else
+        throw chipy::value_exception("cannot extract float!");
+}
+
 inline std::string unpack_string(ValuePtr val)
 {
     auto sval = value_cast<StringVal>(val);

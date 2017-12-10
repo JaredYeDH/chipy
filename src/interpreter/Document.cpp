@@ -2,6 +2,8 @@
 #include "chipy/Dictionary.h"
 #include "chipy/List.h"
 
+#include "modules/geo/vector2.h"
+
 namespace chipy
 {
 
@@ -50,8 +52,23 @@ void value_to_bdoc(const std::string &key, ValuePtr value, json::Writer &writer)
         writer.write_integer(key, i->get());
         break;
     }
+    case ValueType::Custom:
+    {
+        auto c = value_cast<CustomValue>(value);
+        auto bs = c->as_bitstream();
+        writer.write_binary(key, bs);
+        break;
+    }
+#ifdef USE_GEO
+    case ValueType::geo_Vector2:
+    {
+        auto v = value_cast<vector2>(value);
+        writer.write_vector2(key, v->get());
+        break;
+    }
+#endif
     default:
-        throw std::runtime_error("Unknown value type");
+        throw std::runtime_error("Failed to conert to bdoc: Unknown value type");
     }
 }
 

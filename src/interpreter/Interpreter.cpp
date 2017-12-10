@@ -74,6 +74,12 @@ ModulePtr Interpreter::get_module(const std::string &name)
     {
         module = wrap_value<Module>(new (m_mem) RandModule(m_mem));
     }
+#ifdef USE_GEO
+    else if(name == "geo")
+    {
+        module = wrap_value<Module>(new (m_mem) GeoModule(m_mem));
+    }
+#endif
     else
         return nullptr;
 

@@ -10,12 +10,18 @@ subdir('./test')
 gtest = dependency('gtest', main : true)
 gmock = dependency('gmock')
 
+compile_args = []
+
+if get_option('use_geo') == true
+    compile_args = compile_args + ['-DUSE_GEO']
+endif
+
 cpp = meson.get_compiler('cpp')
 log_dep = cpp.find_library('glog')
 json_dep = cpp.find_library('document', dirs: prefix_library_path)
 pypa_dep = cpp.find_library('pypa', dirs: prefix_library_path)
 
-chipy = shared_library('chipy', [compiler_cpp_files, interpreter_cpp_files], include_directories: inc_dirs, dependencies: [log_dep, json_dep, pypa_dep], install: true)
+chipy = shared_library('chipy', [compiler_cpp_files, interpreter_cpp_files], include_directories: inc_dirs, dependencies: [log_dep, json_dep, pypa_dep], install: true, cpp_args: compile_args)
 
 sgx_sdk_dir = '/opt/intel/sgxsdk'
 sgx_library_path = sgx_sdk_dir + '/lib64'
